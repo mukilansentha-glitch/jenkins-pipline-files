@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'VERSION', defaultValue: '1.0', description: 'Application Version')
+
+        choice(name: 'ENVIRONMENT',
+               choices: ['dev', 'staging', 'prod'],
+               description: 'Select Environment')
+
+        booleanParam(name: 'RUN_TESTS',
+                     defaultValue: true,
+                     description: 'Run Tests before Deploy?')
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo "Building version ${params.VERSION}"
+            }
+        }
+
+        stage('Test') {
+            when {
+                expression { return params.RUN_TESTS }
+            }
+            steps {
+                echo "Running Tests..."
+            }
+        }
+    }
+
+    post {
+        success {
+            build job: 'Deploy-Job',
+                  wait: true,
+                  parameters: [
+                      string(name: 'VERSION', value: params.VERSION),
+                      string(name: 'ENVIRONMENT', value: params.ENVIRONMENT),
+                      booleanParam(name: 'RUN_TESTS', value: params.RUN_TESTS)
+                  ]
+        }
+    }
+}
