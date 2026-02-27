@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Build') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    echo "my 1st app"
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    echo "my first test"
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    echo "deployed successfully"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'This always runs'
+        }
+        success {
+            echo 'Build succeeded'
+        }
+        failure {
+            echo 'Build failed'
+        }
+    }
+}
