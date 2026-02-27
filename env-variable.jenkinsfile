@@ -11,6 +11,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building ${APP_NAME} version ${VERSION}"
+                echo "Buildin No ${BUILD_NUMBER}
             }
         }
 
